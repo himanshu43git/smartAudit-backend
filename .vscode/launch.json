@@ -1,0 +1,75 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ProfileServiceApplication<profile-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.audit.profile.ProfileServiceApplication",
+            "projectName": "profile-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceRegistryApplication<SERVICE-REGISTERY>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.audit.registery.ServiceRegistryApplication",
+            "projectName": "SERVICE-REGISTERY",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=56897 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=SERVICE-REGISTERY"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ApiGatewayApplication<API-GATEWAY>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.audit.gateway.ApiGatewayApplication",
+            "projectName": "API-GATEWAY",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ApiGatewayApplication<api-gateway>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.audit.gateway.ApiGatewayApplication",
+            "projectName": "api-gateway",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ProfileServiceApplication<PROFILE-SERVICE>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.audit.profile.ProfileServiceApplication",
+            "projectName": "PROFILE-SERVICE",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-NotificationServiceApplication<NOTIFICATION-SERVICE>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.audit.notification.NotificationServiceApplication",
+            "projectName": "NOTIFICATION-SERVICE",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-AuthServiceApplication<AUTH-SERVICE>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.audit.auth.AuthServiceApplication",
+            "projectName": "AUTH-SERVICE",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

@@ -1,0 +1,62 @@
+server:
+  port: 13000
+
+spring:
+  application:
+    name: API-GATEWAY
+  cloud:
+    gateway:
+      # Enable service discovery for dynamic routing
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      # Define routes for each microservice
+      routes:
+        # ==================== PROFILE SERVICE ====================
+        - id: profile-service
+          uri: lb://PROFILE-SERVICE
+          predicates:
+            - Path=/api/profile/**
+          filters:
+            - StripPrefix=1
+
+        # ==================== EXPENSE SERVICE ====================
+        - id: expense-service-expenses
+          uri: lb://EXPENSE-SERVICE
+          predicates:
+            - Path=/api/expense/**
+          filters:
+            - StripPrefix=1
+
+        - id: expense-service-categories
+          uri: lb://EXPENSE-SERVICE
+          predicates:
+            - Path=/api/category/**
+          filters:
+            - StripPrefix=1
+
+# ==================== EUREKA CLIENT CONFIG ====================
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:13001/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    hostname: localhost
+    prefer-ip-address: false
+    instance-id: ${spring.application.name}:${server.port}
+
+# ==================== ACTUATOR ====================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      enabled: true

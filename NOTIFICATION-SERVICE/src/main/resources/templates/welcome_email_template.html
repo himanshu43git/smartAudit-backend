@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${subject}">Welcome – Smart Audit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+          --ink: #0d1117;
+          --paper: #f5f0e8;
+          --accent: #1a472a;
+          --gold: #c9a84c;
+          --muted: #6b7280;
+          --border: #d6cfc0;
+        }
+
+        body {
+          background: #e8e2d6;
+          font-family: 'DM Sans', sans-serif;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 40px 20px;
+        }
+
+        .envelope-wrap {
+          perspective: 1000px;
+          animation: floatIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes floatIn {
+          from { opacity: 0; transform: translateY(40px) rotateX(6deg); }
+          to   { opacity: 1; transform: translateY(0) rotateX(0deg); }
+        }
+
+        .card {
+          background: var(--paper);
+          width: min(580px, 100%);
+          border-radius: 3px;
+          overflow: hidden;
+          box-shadow:
+            0 2px 0 var(--border),
+            0 12px 60px rgba(0,0,0,0.18),
+            0 40px 100px rgba(0,0,0,0.10);
+          position: relative;
+        }
+
+        /* Header */
+        .header {
+          background: var(--accent);
+          padding: 40px 48px 36px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .header::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: repeating-linear-gradient(
+            45deg, transparent, transparent 20px,
+            rgba(255,255,255,0.025) 20px, rgba(255,255,255,0.025) 40px
+          );
+        }
+
+        .stamp {
+          position: absolute;
+          top: 28px; right: 36px;
+          width: 64px; height: 80px;
+          border: 3px solid rgba(201,168,76,0.7);
+          border-radius: 2px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          background: rgba(201,168,76,0.08);
+        }
+
+        .stamp-icon { font-size: 22px; line-height: 1; }
+
+        .stamp-text {
+          font-size: 7px; font-weight: 500;
+          letter-spacing: 0.15em;
+          color: var(--gold);
+          text-transform: uppercase;
+        }
+
+        .logo-area {
+          display: flex; align-items: center;
+          gap: 12px; margin-bottom: 28px;
+        }
+
+        .logo-mark {
+          width: 40px; height: 40px;
+          background: var(--gold);
+          border-radius: 2px;
+          display: flex; align-items: center; justify-content: center;
+          font-family: 'Playfair Display', serif;
+          font-size: 20px; font-weight: 700;
+          color: var(--accent); flex-shrink: 0;
+        }
+
+        .logo-name {
+          font-size: 13px; font-weight: 500;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.9);
+        }
+
+        .header-headline {
+          font-family: 'Playfair Display', serif;
+          font-size: clamp(26px, 5vw, 36px);
+          font-weight: 700; color: #fff;
+          line-height: 1.15; max-width: 360px;
+          position: relative; z-index: 1;
+        }
+
+        .header-headline em { font-style: italic; color: var(--gold); }
+
+        /* Subject badge */
+        .subject-badge {
+          display: inline-block;
+          margin-top: 16px;
+          background: rgba(201,168,76,0.15);
+          border: 1px solid rgba(201,168,76,0.4);
+          color: var(--gold);
+          font-size: 11px;
+          font-weight: 500;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          padding: 5px 14px;
+          border-radius: 999px;
+          position: relative; z-index: 1;
+        }
+
+        /* Torn edge */
+        .torn { height: 18px; background: var(--accent); position: relative; margin-bottom: -1px; }
+        .torn::after {
+          content: '';
+          position: absolute;
+          bottom: 0; left: 0; right: 0; height: 18px;
+          background: var(--paper);
+          clip-path: polygon(
+            0% 100%, 2% 0%, 4% 90%, 6% 10%, 8% 80%, 10% 20%,
+            12% 95%, 14% 5%, 16% 85%, 18% 15%, 20% 100%,
+            22% 0%, 24% 90%, 26% 10%, 28% 80%, 30% 25%,
+            32% 100%, 34% 5%, 36% 85%, 38% 15%, 40% 95%,
+            42% 0%, 44% 90%, 46% 10%, 48% 85%, 50% 20%,
+            52% 100%, 54% 5%, 56% 80%, 58% 15%, 60% 95%,
+            62% 0%, 64% 90%, 66% 10%, 68% 85%, 70% 20%,
+            72% 100%, 74% 5%, 76% 80%, 78% 15%, 80% 95%,
+            82% 0%, 84% 90%, 86% 10%, 88% 80%, 90% 25%,
+            92% 100%, 94% 5%, 96% 90%, 98% 10%, 100% 100%
+          );
+        }
+
+        /* Body */
+        .body { padding: 40px 48px 32px; }
+
+        .salutation {
+          font-family: 'Playfair Display', serif;
+          font-size: 18px; color: var(--ink);
+          margin-bottom: 20px;
+        }
+
+        .salutation .recipient {
+          color: var(--accent); font-weight: 700;
+          border-bottom: 2px solid var(--gold);
+          padding-bottom: 1px;
+        }
+
+        /* Dynamic body message box */
+        .message-box {
+          background: rgba(26,71,42,0.04);
+          border-left: 3px solid var(--gold);
+          border-radius: 0 4px 4px 0;
+          padding: 18px 22px;
+          font-size: 15px;
+          line-height: 1.78;
+          color: #374151;
+          margin-bottom: 28px;
+          white-space: pre-line;
+        }
+
+        /* Feature pills */
+        .features {
+          display: flex; flex-wrap: wrap;
+          gap: 10px; margin-bottom: 36px;
+        }
+
+        .pill {
+          display: flex; align-items: center;
+          gap: 7px; padding: 7px 14px;
+          border: 1.5px solid var(--border);
+          border-radius: 999px;
+          font-size: 12.5px; font-weight: 500;
+          color: var(--accent);
+          background: rgba(26,71,42,0.04);
+          animation: pillIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        .pill:nth-child(1) { animation-delay: 0.3s; }
+        .pill:nth-child(2) { animation-delay: 0.45s; }
+        .pill:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes pillIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .pill-dot {
+          width: 6px; height: 6px;
+          background: var(--gold); border-radius: 50%; flex-shrink: 0;
+        }
+
+        /* CTA */
+        .cta-btn {
+          display: inline-block;
+          background: var(--accent); color: #fff;
+          font-size: 13.5px; font-weight: 500;
+          letter-spacing: 0.12em; text-transform: uppercase;
+          text-decoration: none;
+          padding: 15px 36px; border-radius: 2px;
+          transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+          box-shadow: 0 4px 20px rgba(26,71,42,0.25);
+          margin-bottom: 36px;
+        }
+
+        .cta-btn:hover {
+          background: #133620;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 28px rgba(26,71,42,0.35);
+        }
+
+        .divider {
+          border: none;
+          border-top: 1.5px solid var(--border);
+          margin: 0 48px 28px;
+        }
+
+        /* Footer */
+        .footer { padding: 0 48px 40px; position: relative; }
+
+        .sign-off { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+        .sign-name {
+          font-family: 'Playfair Display', serif;
+          font-size: 22px; color: var(--ink);
+          margin-top: 10px; font-weight: 700;
+        }
+
+        /* Sender email meta */
+        .meta-row {
+          display: flex; align-items: center;
+          gap: 8px; margin-top: 14px;
+          font-size: 12px; color: var(--muted);
+        }
+
+        .meta-label {
+          font-size: 10px; font-weight: 600;
+          letter-spacing: 0.15em; text-transform: uppercase;
+          color: var(--border);
+        }
+
+        .meta-value { color: var(--accent); font-weight: 500; }
+
+        /* Postmark */
+        .postmark {
+          position: absolute; bottom: 36px; right: 40px;
+          text-align: center; opacity: 0.2;
+          transform: rotate(-12deg);
+        }
+
+        .postmark-circle {
+          width: 70px; height: 70px;
+          border: 2.5px solid var(--ink); border-radius: 50%;
+          display: flex; flex-direction: column;
+          align-items: center; justify-content: center; gap: 2px;
+        }
+
+        .postmark-text {
+          font-size: 7px; font-weight: 700;
+          letter-spacing: 0.15em; text-transform: uppercase;
+          color: var(--ink);
+        }
+
+        .postmark-line { width: 42px; height: 1.5px; background: var(--ink); }
+
+        /* Address lines */
+        .address-lines { display: flex; flex-direction: column; gap: 3px; margin-top: 16px; }
+        .addr-line { height: 1.5px; background: var(--border); border-radius: 2px; }
+        .addr-line:nth-child(1) { width: 120px; }
+        .addr-line:nth-child(2) { width: 90px; }
+        .addr-line:nth-child(3) { width: 108px; }
+    </style>
+</head>
+<body>
+
+<div class="envelope-wrap">
+    <div class="card">
+
+        <!-- ═══ HEADER ═══ -->
+        <div class="header">
+            <div class="logo-area">
+                <div class="logo-mark">SA</div>
+                <div class="logo-name">Smart Audit</div>
+            </div>
+
+            <div class="header-headline">
+                Welcome aboard,<br><em>you're in.</em>
+            </div>
+
+            <!-- Dynamic subject shown as badge -->
+            <div class="subject-badge" th:text="${subject}">Welcome to Smart Audit</div>
+
+            <!-- Decorative stamp -->
+            <div class="stamp">
+                <div class="stamp-icon">✦</div>
+                <div class="stamp-text">Verified</div>
+            </div>
+        </div>
+
+        <div class="torn"></div>
+
+        <!-- ═══ BODY ═══ -->
+        <div class="body">
+
+            <!-- Greeting with dynamic name -->
+            <p class="salutation">
+                Dear <span class="recipient" th:text="${name}">{{name}}</span>,
+            </p>
+
+            <!-- Dynamic body message -->
+            <div class="message-box" th:text="${body}">
+                Thank you for registering with Smart Audit. We are excited to have you on board!
+            </div>
+
+            <!-- Feature pills -->
+            <div class="features">
+                <div class="pill"><div class="pill-dot"></div> Real-time Analysis</div>
+                <div class="pill"><div class="pill-dot"></div> Compliance Tracking</div>
+                <div class="pill"><div class="pill-dot"></div> Secure Reports</div>
+            </div>
+
+            <!-- CTA -->
+            <a href="#" class="cta-btn">Get Started →</a>
+
+        </div>
+
+        <hr class="divider">
+
+        <!-- ═══ FOOTER ═══ -->
+        <div class="footer">
+            <div class="sign-off">
+                With warm regards,
+                <div class="sign-name">The Smart Audit Team</div>
+            </div>
+
+            <!-- Dynamic sender/recipient meta -->
+            <div class="meta-row">
+                <span class="meta-label">From</span>
+                <span class="meta-value" th:text="${senderEmail}">support@smartaudit.com</span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-label">To</span>
+                <span class="meta-value" th:text="${email}">user@example.com</span>
+            </div>
+
+            <div class="address-lines">
+                <div class="addr-line"></div>
+                <div class="addr-line"></div>
+                <div class="addr-line"></div>
+            </div>
+
+            <!-- Postmark watermark -->
+            <div class="postmark">
+                <div class="postmark-circle">
+                    <div class="postmark-text">Smart</div>
+                    <div class="postmark-line"></div>
+                    <div class="postmark-text">Audit</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

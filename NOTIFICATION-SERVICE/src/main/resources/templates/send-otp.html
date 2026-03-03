@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Your Verification Code – Smart Audit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+          --bg-deep:    #080c10;
+          --bg-card:    #0d1219;
+          --bg-inner:   #111820;
+          --accent:     #00d4ff;
+          --accent-dim: rgba(0, 212, 255, 0.12);
+          --accent-glow:rgba(0, 212, 255, 0.35);
+          --gold:       #f0b429;
+          --text-hi:    #e8f4f8;
+          --text-mid:   #8fa8b8;
+          --text-lo:    #3a5060;
+          --border:     rgba(0, 212, 255, 0.15);
+          --border-lo:  rgba(255,255,255,0.06);
+        }
+
+        body {
+          background: var(--bg-deep);
+          font-family: 'Syne', sans-serif;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 32px 16px;
+        }
+
+        /* ── Outer wrapper with grid noise ── */
+        .shell {
+          width: min(560px, 100%);
+          animation: rise 0.8s cubic-bezier(0.22,1,0.36,1) both;
+        }
+
+        @keyframes rise {
+          from { opacity:0; transform: translateY(32px); }
+          to   { opacity:1; transform: translateY(0); }
+        }
+
+        /* ── Card ── */
+        .card {
+          background: var(--bg-card);
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow:
+            0 0 0 1px rgba(0,212,255,0.05),
+            0 20px 60px rgba(0,0,0,0.6),
+            0 0 120px rgba(0,212,255,0.04);
+          position: relative;
+        }
+
+        /* Subtle scanline overlay */
+        .card::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 3px,
+            rgba(255,255,255,0.012) 3px,
+            rgba(255,255,255,0.012) 4px
+          );
+          pointer-events: none;
+          z-index: 0;
+          border-radius: 12px;
+        }
+
+        /* ── Header band ── */
+        .header {
+          position: relative;
+          padding: 36px 44px 32px;
+          background: linear-gradient(135deg, #0a1520 0%, #081018 100%);
+          border-bottom: 1px solid var(--border);
+          overflow: hidden;
+          z-index: 1;
+        }
+
+        /* Radial glow behind logo */
+        .header::after {
+          content: '';
+          position: absolute;
+          top: -40px; left: -40px;
+          width: 220px; height: 220px;
+          background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+          pointer-events: none;
+        }
+
+        /* Corner bracket decoration */
+        .bracket-tl, .bracket-br {
+          position: absolute;
+          width: 20px; height: 20px;
+          border-color: var(--accent);
+          border-style: solid;
+          opacity: 0.5;
+        }
+
+        .bracket-tl { top: 14px; left: 14px; border-width: 2px 0 0 2px; border-radius: 3px 0 0 0; }
+        .bracket-br { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; border-radius: 0 0 3px 0; }
+
+        .logo-row {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 22px;
+          position: relative;
+          z-index: 1;
+        }
+
+        .logo-hex {
+          width: 38px; height: 38px;
+          background: var(--accent);
+          clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .logo-hex span {
+          font-family: 'Space Mono', monospace;
+          font-size: 13px; font-weight: 700;
+          color: var(--bg-deep);
+          letter-spacing: -0.05em;
+        }
+
+        .logo-text {
+          font-size: 12px; font-weight: 600;
+          letter-spacing: 0.25em;
+          text-transform: uppercase;
+          color: var(--text-mid);
+        }
+
+        .header-title {
+          font-size: clamp(22px, 5vw, 30px);
+          font-weight: 800;
+          color: var(--text-hi);
+          line-height: 1.15;
+          position: relative;
+          z-index: 1;
+        }
+
+        .header-title .accent-word {
+          color: var(--accent);
+          text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .header-sub {
+          margin-top: 8px;
+          font-size: 13px;
+          color: var(--text-mid);
+          font-weight: 400;
+          position: relative;
+          z-index: 1;
+        }
+
+        /* ── Body ── */
+        .body {
+          padding: 36px 44px;
+          position: relative;
+          z-index: 1;
+        }
+
+        .to-line {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 28px;
+          padding: 10px 16px;
+          background: var(--bg-inner);
+          border: 1px solid var(--border-lo);
+          border-radius: 6px;
+          font-size: 13px;
+        }
+
+        .to-label {
+          font-family: 'Space Mono', monospace;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--text-lo);
+          flex-shrink: 0;
+        }
+
+        .to-email {
+          color: var(--accent);
+          font-weight: 600;
+          font-size: 13px;
+          word-break: break-all;
+        }
+
+        .intro-text {
+          font-size: 14.5px;
+          line-height: 1.75;
+          color: var(--text-mid);
+          margin-bottom: 32px;
+        }
+
+        /* ── OTP Display ── */
+        .otp-section {
+          margin-bottom: 32px;
+        }
+
+        .otp-label {
+          font-family: 'Space Mono', monospace;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.25em;
+          text-transform: uppercase;
+          color: var(--text-lo);
+          margin-bottom: 14px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .otp-label::after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background: var(--border-lo);
+        }
+
+        .otp-box {
+          background: var(--bg-inner);
+          border: 1px solid var(--border);
+          border-radius: 10px;
+          padding: 28px 24px;
+          text-align: center;
+          position: relative;
+          overflow: hidden;
+        }
+
+        /* Glow pulse behind the OTP */
+        .otp-box::before {
+          content: '';
+          position: absolute;
+          top: 50%; left: 50%;
+          transform: translate(-50%, -50%);
+          width: 200px; height: 80px;
+          background: radial-gradient(ellipse, rgba(0,212,255,0.1) 0%, transparent 70%);
+          animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 0.5; transform: translate(-50%,-50%) scale(1); }
+          50%       { opacity: 1;   transform: translate(-50%,-50%) scale(1.15); }
+        }
+
+        .otp-code {
+          font-family: 'Space Mono', monospace;
+          font-size: clamp(32px, 10vw, 48px);
+          font-weight: 700;
+          letter-spacing: 0.35em;
+          color: var(--accent);
+          text-shadow:
+            0 0 12px var(--accent-glow),
+            0 0 40px rgba(0,212,255,0.2);
+          position: relative;
+          z-index: 1;
+          padding-right: 0.35em; /* compensate letter-spacing on last char */
+          animation: codeIn 0.6s cubic-bezier(0.22,1,0.36,1) 0.3s both;
+        }
+
+        @keyframes codeIn {
+          from { opacity:0; transform: scale(0.85); letter-spacing: 0.6em; }
+          to   { opacity:1; transform: scale(1);    letter-spacing: 0.35em; }
+        }
+
+        /* Timer bar */
+        .timer-row {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          margin-top: 14px;
+          font-size: 12px;
+          color: var(--text-lo);
+          position: relative;
+          z-index: 1;
+        }
+
+        .timer-dot {
+          width: 6px; height: 6px;
+          background: var(--gold);
+          border-radius: 50%;
+          animation: blink 1s step-start infinite;
+        }
+
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0; }
+        }
+
+        /* ── Divider ── */
+        .divider {
+          border: none;
+          border-top: 1px solid var(--border-lo);
+          margin: 0 0 24px;
+        }
+
+        /* ── Warning box ── */
+        .warning-box {
+          display: flex;
+          gap: 12px;
+          background: rgba(240, 180, 41, 0.06);
+          border: 1px solid rgba(240, 180, 41, 0.2);
+          border-radius: 8px;
+          padding: 14px 18px;
+          margin-bottom: 28px;
+        }
+
+        .warning-icon {
+          font-size: 16px;
+          flex-shrink: 0;
+          margin-top: 1px;
+        }
+
+        .warning-text {
+          font-size: 12.5px;
+          color: #a8900a;
+          line-height: 1.6;
+        }
+
+        .warning-text strong {
+          color: var(--gold);
+          font-weight: 600;
+        }
+
+        /* ── Footer ── */
+        .footer {
+          padding: 20px 44px 32px;
+          border-top: 1px solid var(--border-lo);
+          position: relative;
+          z-index: 1;
+        }
+
+        .footer-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+          margin-bottom: 20px;
+        }
+
+        .meta-item {
+          background: var(--bg-inner);
+          border: 1px solid var(--border-lo);
+          border-radius: 6px;
+          padding: 10px 14px;
+        }
+
+        .meta-key {
+          font-family: 'Space Mono', monospace;
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--text-lo);
+          margin-bottom: 4px;
+        }
+
+        .meta-val {
+          font-size: 12px;
+          font-weight: 600;
+          color: var(--text-mid);
+          word-break: break-all;
+        }
+
+        .meta-val.accent { color: var(--accent); }
+
+        .footer-note {
+          font-size: 11.5px;
+          color: var(--text-lo);
+          line-height: 1.65;
+          text-align: center;
+        }
+
+        .footer-note a {
+          color: var(--text-mid);
+          text-decoration: underline;
+          text-underline-offset: 3px;
+        }
+
+        /* ── Bottom bar ── */
+        .bottom-bar {
+          background: var(--bg-deep);
+          border-top: 1px solid var(--border-lo);
+          padding: 14px 44px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          z-index: 1;
+          position: relative;
+        }
+
+        .bottom-brand {
+          font-family: 'Space Mono', monospace;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--text-lo);
+        }
+
+        .bottom-status {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 10px;
+          color: var(--text-lo);
+          letter-spacing: 0.05em;
+        }
+
+        .status-dot {
+          width: 5px; height: 5px;
+          background: #22c55e;
+          border-radius: 50%;
+          box-shadow: 0 0 6px rgba(34,197,94,0.6);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 480px) {
+          .header  { padding: 28px 24px 24px; }
+          .body    { padding: 28px 24px; }
+          .footer  { padding: 20px 24px 28px; }
+          .bottom-bar { padding: 14px 24px; }
+          .footer-grid { grid-template-columns: 1fr; }
+          .otp-code { letter-spacing: 0.25em; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="shell">
+    <div class="card">
+
+        <!-- ═══ HEADER ═══ -->
+        <div class="header">
+            <div class="bracket-tl"></div>
+            <div class="bracket-br"></div>
+
+            <div class="logo-row">
+                <div class="logo-hex"><span>SA</span></div>
+                <div class="logo-text">Smart Audit</div>
+            </div>
+
+            <div class="header-title">
+                Your <span class="accent-word">Verification</span><br/>Code is Here
+            </div>
+            <div class="header-sub">One-time password for secure access</div>
+        </div>
+
+        <!-- ═══ BODY ═══ -->
+        <div class="body">
+
+            <!-- Recipient line -->
+            <div class="to-line">
+                <span class="to-label">To</span>
+                <span class="to-email" th:text="${recipientEmail}">user@example.com</span>
+            </div>
+
+            <p class="intro-text">
+                We received a request to verify your identity on Smart Audit.
+                Use the one-time password below to complete your authentication.
+                This code is valid for <strong style="color:var(--text-hi)">10 minutes</strong> only.
+            </p>
+
+            <!-- OTP Code -->
+            <div class="otp-section">
+                <div class="otp-label">One-Time Password</div>
+                <div class="otp-box">
+                    <div class="otp-code" th:text="${otp}">000000</div>
+                    <div class="timer-row">
+                        <span class="timer-dot"></span>
+                        Expires in 10 minutes
+                    </div>
+                </div>
+            </div>
+
+            <hr class="divider"/>
+
+            <!-- Security warning -->
+            <div class="warning-box">
+                <div class="warning-icon">⚠</div>
+                <div class="warning-text">
+                    <strong>Never share this code.</strong> Smart Audit will never ask for your OTP via phone, chat, or email. If you did not request this code, please ignore this email or contact support immediately.
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ═══ FOOTER ═══ -->
+        <div class="footer">
+            <div class="footer-grid">
+                <div class="meta-item">
+                    <div class="meta-key">From</div>
+                    <div class="meta-val accent" th:text="${senderEmail}">noreply@smartaudit.com</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-key">To</div>
+                    <div class="meta-val" th:text="${recipientEmail}">user@example.com</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-key">Type</div>
+                    <div class="meta-val">OTP Verification</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-key">Validity</div>
+                    <div class="meta-val">10 minutes</div>
+                </div>
+            </div>
+
+            <p class="footer-note">
+                This is an automated security email from Smart Audit.<br/>
+                Please do not reply to this message.
+            </p>
+        </div>
+
+        <!-- ═══ BOTTOM BAR ═══ -->
+        <div class="bottom-bar">
+            <span class="bottom-brand">© Smart Audit</span>
+            <span class="bottom-status">
+        <span class="status-dot"></span>
+        Encrypted &amp; Secure
+      </span>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

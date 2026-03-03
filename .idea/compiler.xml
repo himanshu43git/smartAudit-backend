@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="EXPENSE-SERVICE" />
+        <module name="SERVICE-REGISTERY" />
+        <module name="API-GATEWAY" />
+      </profile>
+      <profile name="Annotation profile for NOTIFICATION-SERVICE" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+        </processorPath>
+        <module name="PROFILE-SERVICE" />
+        <module name="NOTIFICATION-SERVICE" />
+        <module name="AWS-BUCKET" />
+        <module name="AUTH-SERVICE" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="TEST-SERVICE" target="21" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="API-GATEWAY" options="-parameters" />
+      <module name="AUTH-SERVICE" options="-parameters" />
+      <module name="AWS-BUCKET" options="-parameters" />
+      <module name="EXPENSE-SERVICE" options="-parameters" />
+      <module name="NOTIFICATION-SERVICE" options="-parameters" />
+      <module name="PROFILE-SERVICE" options="-parameters" />
+      <module name="SERVICE-REGISTERY" options="-parameters" />
+      <module name="TEST-SERVICE" options="-parameters" />
+    </option>
+  </component>
+</project>

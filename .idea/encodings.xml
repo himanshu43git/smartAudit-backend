@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/API-GATEWAY/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/AUTH-SERVICE/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/AWS-BUCKET/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/EXPENSE-SERVICE/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/NOTIFICATION-SERVICE/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/PROFILE-SERVICE/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/SERVICE-REGISTERY/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/TEST-SERVICE/src/main/java" charset="UTF-8" />
+  </component>
+</project>

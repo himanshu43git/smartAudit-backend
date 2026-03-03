@@ -1,0 +1,46 @@
+#spring:
+#  application:
+#    name: service-registry
+#
+#server:
+#  port: 13001
+#
+#eureka:
+#  client:
+#    register-with-eureka: false
+#    fetch-registry: false
+#    service-url:
+#      defaultZone: http://localhost:13001/eureka/
+
+
+server:
+  port: 13001
+
+spring:
+  application:
+    name: SERVICE-REGISTRY
+
+# Eureka server behavior
+eureka:
+  client:
+    # A dedicated registry should NOT try to register with itself
+    register-with-eureka: false
+    # No need to fetch the registry from others when standalone
+    fetch-registry: false
+  server:
+    # Optional: disable self-preservation during development so instances show up/evict faster
+    enable-self-preservation: false
+
+# Instance metadata for the registry itself (optional)
+instance:
+  hostname: localhost
+
+# Expose actuator endpoints for health/monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
