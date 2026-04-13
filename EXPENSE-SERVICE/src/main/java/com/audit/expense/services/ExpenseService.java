@@ -14,6 +14,7 @@ public interface ExpenseService {
     ExpenseResponse createExpense(UUID userId, ExpenseRequest request);
     ExpenseResponse getExpenseById(UUID userId, UUID expenseId);
     List<ExpenseResponse> getExpensesByUserId(UUID userId);
+    List<ExpenseResponse> getExpensesByLastNDays(UUID userId, int days);
     List<ExpenseResponse> getExpensesByCategory(UUID userId, UUID categoryId);
     List<ExpenseResponse> getExpensesByDateRange(UUID userId, LocalDateTime start, LocalDateTime end);
     ExpenseResponse updateExpense(UUID userId, UUID expenseId, ExpenseRequest request);

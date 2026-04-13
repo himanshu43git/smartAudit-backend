@@ -43,4 +43,18 @@ public class RabbitMqService {
 
     }
 
+
+    public void sendResetPasswordEmail(String email){
+
+        boolean response = bridge.send("ResetPasswordEvent-out-0", email);
+
+        if(!response){
+            log.error("Failed to send Reset Password Email to RabbitMQ for recipient: {}", email);
+            throw new RuntimeException("Failed to send Reset Password Email to RabbitMQ");
+        }
+
+        log.info("Successfully sent Reset Password Email to RabbitMQ for recipient: {}", email);
+
+    }
+
 }

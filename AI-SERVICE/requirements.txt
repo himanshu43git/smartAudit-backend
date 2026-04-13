@@ -1,0 +1,5 @@
+fastapi
+httpx
+pydantic_settings
+groq
+uvicorn

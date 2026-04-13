@@ -17,7 +17,11 @@ import com.audit.expense.services.ExpenseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -51,7 +55,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         // Build ExpenseInfo embedded object
         ExpenseInfo expenseInfo = new ExpenseInfo();
         expenseInfo.setAmount(request.getAmount());
-        expenseInfo.setDate(request.getTransactionDate());
+        expenseInfo.setDate(request.getTransactionDate().toInstant(ZoneOffset.UTC));
         expenseInfo.setMerchantName(request.getMerchantName());
         expenseInfo.setDescription(request.getDescription());
         expenseInfo.setTitle(request.getTitle());
@@ -94,6 +98,27 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         return expenses.stream()
                 .map(expense -> mapToExpenseResponse(expense, getCategoryName(expense.getCategoryId())))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ExpenseResponse> getExpensesByLastNDays(UUID userId, int days) {
+
+        Instant end = Instant.now();
+        Instant start = end.minus(days, ChronoUnit.DAYS);
+
+        System.out.println("Start: " + start);
+        System.out.println("End: " + end);
+
+        List<Expense> expenses =
+                expenseRepository.findByUserIdAndInfoDateBetween(userId, start, end);
+
+        return expenses.stream()
+                .map(expense -> mapToExpenseResponse(
+                        expense,
+                        getCategoryName(expense.getCategoryId())
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -164,7 +189,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             expenseInfo.setAmount(request.getAmount());
         }
         if (request.getTransactionDate() != null) {
-            expenseInfo.setDate(request.getTransactionDate());
+            expenseInfo.setDate(request.getTransactionDate().toInstant(ZoneOffset.UTC));
         }
         if (request.getMerchantName() != null) {
             expenseInfo.setMerchantName(request.getMerchantName());

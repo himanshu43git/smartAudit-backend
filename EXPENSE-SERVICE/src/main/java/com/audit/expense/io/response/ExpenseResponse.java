@@ -27,7 +27,7 @@ public class ExpenseResponse {
 
     private BigDecimal amount;
 
-    private LocalDateTime transactionDate;
+    private Instant transactionDate;
 
     private String merchantName;
 

@@ -67,11 +67,25 @@ public class ExpenseController {
      * Get all expenses for a user
      * GET /expense/{userId}
      */
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<ExpenseResponse>> getAllExpensesByUserId(
-            @PathVariable("userId") UUID userId) {
+//    @GetMapping("/{userId}")
+//    public ResponseEntity<List<ExpenseResponse>> getAllExpensesByUserId(
+//            @PathVariable("userId") UUID userId) {
+//
+//        List<ExpenseResponse> response = expenseService.getExpensesByUserId(userId);
+//
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(response);
+//    }
 
-        List<ExpenseResponse> response = expenseService.getExpensesByUserId(userId);
+    @GetMapping("/getExpenses/{userId}")
+    public ResponseEntity<List<ExpenseResponse>> getExpensesByLastNDays(
+            @PathVariable("userId") UUID userId,
+            @RequestParam(value = "days", defaultValue = "30") int days){
+
+        System.out.println("Reached here");
+
+        List<ExpenseResponse> response = expenseService.getExpensesByLastNDays(userId, days);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -1,10 +1,6 @@
 package com.audit.auth.controller;
 
-import com.audit.auth.io.request.LoginRequest;
-import com.audit.auth.io.request.OtpGenerateRequest;
-import com.audit.auth.io.request.OtpVerifyRequest;
-import com.audit.auth.io.request.RefreshTokenRequest;
-import com.audit.auth.io.request.UserRequest;
+import com.audit.auth.io.request.*;
 import com.audit.auth.io.response.AuthTokensResponse;
 import com.audit.auth.io.response.OtpGenerateResponse;
 import com.audit.auth.io.response.OtpVerifyResponse;
@@ -55,5 +51,10 @@ public class AuthController {
 //    public ResponseEntity<String> testRabbit(@RequestBody UserRequest request) {
 //        return ResponseEntity.ok(authService.testRabbit(request));
 //    }
+
+    @PostMapping("reset-password")
+    public ResponseEntity<ResetPasswordResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        return ResponseEntity.ok(authService.resetPassword(request));
+    }
 
 }

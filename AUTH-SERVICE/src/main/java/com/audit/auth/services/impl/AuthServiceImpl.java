@@ -6,11 +6,7 @@ import com.audit.auth.exceptions.BadRequestException;
 import com.audit.auth.exceptions.UnauthorizedException;
 import com.audit.auth.exceptions.UserAlreadyExistsException;
 import com.audit.auth.exceptions.UserNotFoundException;
-import com.audit.auth.io.request.LoginRequest;
-import com.audit.auth.io.request.OtpGenerateRequest;
-import com.audit.auth.io.request.OtpVerifyRequest;
-import com.audit.auth.io.request.RefreshTokenRequest;
-import com.audit.auth.io.request.UserRequest;
+import com.audit.auth.io.request.*;
 import com.audit.auth.io.response.AuthTokensResponse;
 import com.audit.auth.io.response.OtpGenerateResponse;
 import com.audit.auth.io.response.OtpVerifyResponse;
@@ -269,6 +265,30 @@ public class AuthServiceImpl implements AuthService {
             System.out.println("Verification message not sent");
 //            return "Verification message not sent";
         }
+
+    }
+
+
+    @Override
+    public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
+
+        User user = authRepository.findById(request.getUserId())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (!user.getEmail().equals(request.getEmail())) {
+            throw new UnauthorizedException("Email does not match user");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        authRepository.save(user);
+
+        rabbitMqService.sendResetPasswordEmail(user.getEmail());
+
+        return ResetPasswordResponse.builder()
+                .userId(user.getId().toString())
+                .email(user.getEmail())
+                .message("Password reset successful")
+                .build();
 
     }
 

@@ -1,0 +1,15 @@
+fastapi
+fastapi[standard]
+opencv-python
+pytesseract
+numpy
+langchain-community
+langchain-core
+pymupdf
+docx2txt
+langchain
+langchain-groq
+python-dotenv
+pydantic
+beanie
+motor

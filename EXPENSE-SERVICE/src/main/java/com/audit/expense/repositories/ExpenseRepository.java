@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -55,5 +56,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
 
     // Check if expense exists for user
     boolean existsByIdAndUserId(UUID id, UUID userId);
+
+    List<Expense> findByUserIdAndInfoDateBetween(UUID userId, Instant start, Instant end);
 
 }
