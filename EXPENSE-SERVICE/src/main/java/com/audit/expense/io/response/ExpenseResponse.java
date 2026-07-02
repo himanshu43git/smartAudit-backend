@@ -33,6 +33,8 @@ public class ExpenseResponse {
 
     private String description;
 
+    private String units;
+
     private String title;
 
     private String receiptReferenceId;

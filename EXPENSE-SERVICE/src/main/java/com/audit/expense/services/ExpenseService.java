@@ -4,7 +4,11 @@ import com.audit.expense.io.request.CategoryRequest;
 import com.audit.expense.io.request.ExpenseRequest;
 import com.audit.expense.io.response.CategoryResponse;
 import com.audit.expense.io.response.ExpenseResponse;
+import com.audit.expense.model.Expense;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -26,5 +30,6 @@ public interface ExpenseService {
     List<CategoryResponse> getCategoriesByUserId(UUID userId);
     CategoryResponse updateCategory(UUID userId, UUID categoryId, CategoryRequest request);
     boolean deleteCategory(UUID userId, UUID categoryId);
+
 
 }

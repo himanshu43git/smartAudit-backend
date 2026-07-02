@@ -8,11 +8,11 @@ from src.ai.AiService import AiService
 
 class AnalysisService:
     def __init__(self):
-        self.user_expense_url = "http://localhost:13004/expense/{user_id}"
+        self.user_expense_url = "http://localhost:13004/expense/getExpenses/{user_id}?days={days}"
         self.ai_service = AiService()
 
-    async def analyze_expense(self, user_id: UUID):
-        url = self.user_expense_url.format(user_id=str(user_id))
+    async def analyze_expense(self, user_id: UUID, days: int):
+        url = self.user_expense_url.format(user_id=str(user_id), days = days)
 
         async with httpx.AsyncClient(timeout=10.0) as client:
             try:

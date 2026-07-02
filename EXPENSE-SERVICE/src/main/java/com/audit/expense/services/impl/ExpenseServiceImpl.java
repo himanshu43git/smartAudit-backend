@@ -59,6 +59,11 @@ public class ExpenseServiceImpl implements ExpenseService {
         expenseInfo.setMerchantName(request.getMerchantName());
         expenseInfo.setDescription(request.getDescription());
         expenseInfo.setTitle(request.getTitle());
+        if(request.getUnits() != null){
+            expenseInfo.setUnits(request.getUnits());
+        }else{
+            expenseInfo.setUnits("1");
+        }
 
         // Build Expense entity
         Expense expense = new Expense();
@@ -108,11 +113,16 @@ public class ExpenseServiceImpl implements ExpenseService {
         Instant end = Instant.now();
         Instant start = end.minus(days, ChronoUnit.DAYS);
 
+        System.out.println("UserId = " + userId);
+
+        System.out.println(userId.equals(UUID.fromString("f47ac10b-58cc-4372-a567-0e02b2c3d479")));
+        System.out.println("Days = " + days);
+
         System.out.println("Start: " + start);
         System.out.println("End: " + end);
 
         List<Expense> expenses =
-                expenseRepository.findByUserIdAndInfoDateBetween(userId, start, end);
+                expenseRepository.findExpenses(userId, start, end);
 
         return expenses.stream()
                 .map(expense -> mapToExpenseResponse(
@@ -347,6 +357,7 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .merchantName(info != null ? info.getMerchantName() : null)
                 .description(info != null ? info.getDescription() : null)
                 .title(info != null ? info.getTitle() : null)
+                .units(info != null ? info.getUnits() : null)
                 .receiptReferenceId(expense.getReceiptReferenceId())
                 .paymentStatus(expense.getPaymentStatus())
                 .createdAt(expense.getCreatedAt())

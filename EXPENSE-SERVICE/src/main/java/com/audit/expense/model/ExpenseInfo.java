@@ -32,4 +32,7 @@ public class ExpenseInfo {
 
     @Column(name = "title")
     private String title;
+
+    @Column(name = "no_of_units")
+    private String units;
 }

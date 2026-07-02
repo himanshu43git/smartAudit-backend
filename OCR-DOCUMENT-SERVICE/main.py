@@ -8,6 +8,7 @@ from src.io.response.ocr_image_response import OcrImageResponse
 from src.services.imageOcrService.image_service import ImageOcrService
 from src.services.pdfOcrService.pdf_service import PdfOCRService
 from src.io.response.ocr_pdf_response import OcrPDFResponse
+from src.io.request.ocr_image_request import OcrImageRequest
 
 
 
@@ -20,7 +21,7 @@ def read_root() -> str:
 
 @app.post("/ocr-img-document", response_model=OcrImageResponse)
 async def ocr_image(
-    img_file: OcrImageRequest = Depends()
+    img_file: OcrImageRequest = Depends(OcrImageRequest.as_form)
 ) -> OcrImageResponse:
 
     ocr_service = ImageOcrService()

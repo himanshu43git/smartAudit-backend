@@ -59,4 +59,16 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
 
     List<Expense> findByUserIdAndInfoDateBetween(UUID userId, Instant start, Instant end);
 
+    @Query("""
+SELECT e
+FROM Expense e
+WHERE e.userId = :userId
+AND e.info.date BETWEEN :start AND :end
+""")
+    List<Expense> findExpenses(
+            @Param("userId") UUID userId,
+            @Param("start") Instant start,
+            @Param("end") Instant end
+    );
+
 }

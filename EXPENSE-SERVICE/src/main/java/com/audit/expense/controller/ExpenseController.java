@@ -87,6 +87,8 @@ public class ExpenseController {
 
         List<ExpenseResponse> response = expenseService.getExpensesByLastNDays(userId, days);
 
+        System.out.println("Expenses found = " + response.size());
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);

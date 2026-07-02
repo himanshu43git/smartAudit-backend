@@ -40,6 +40,9 @@ public class ExpenseRequest {
     @Size(max = 255, message = "Title must not exceed 255 characters")
     private String title;
 
+    @Size(max = 100, message = "Units must not exceed 100 characters")
+    private String units;
+
     private String receiptReferenceId;
 
     private PaymentStatus paymentStatus;
